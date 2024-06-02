@@ -1,0 +1,12 @@
+aiogram
+aiogram_dialog
+apscheduler
+asyncpg
+cachetools
+coloredlogs
+httpx
+geopy
+pyrogram
+pytz
+sqlalchemy[asyncio]
+toml

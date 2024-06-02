@@ -1,0 +1,16 @@
+[bot]
+token = "7167777777:AaBbCcDdEeFfGgHh" # bot_token
+
+[settings]
+owner_id = 123456789 # owner_id
+throttling_rate = 0.5
+drop_pending_updates = true
+
+[db]
+database_url = ""
+
+[api] # API app settings for Pyrogram Client
+# Default values are from Telegram Desktop Client (t.me/durovleaks/108)
+# id = 2040 # (Optional) App ID
+# hash = "b18441a1ff607e10a989891a5462e627" # (Optional) App hash
+# bot_api_url = "https://api.telegram.org" # (Optional) Bot API URL
