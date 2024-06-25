@@ -1,18 +1,12 @@
 import logging
 
 from aiogram.types import CallbackQuery
-
 from aiogram_dialog import (
     Dialog,
     DialogManager,
     Window
 )
-
-from aiogram_dialog.widgets.kbd import (
-    Row,
-    Button,
-    Back
-)
+from aiogram_dialog.widgets.kbd import (Back, Button, Row)
 from aiogram_dialog.widgets.text import Const, Format, Multi
 
 from app.dialogs import states
@@ -25,7 +19,7 @@ async def get_address_data(dialog_manager: DialogManager, **kwargs):
         address = dialog_manager.start_data.get("address")
     else:
         address = f"{location.latitude}, {location.longitude}"
-        
+
     address_data = address_util.get_resolved_address(address)
 
     if address_data is None:

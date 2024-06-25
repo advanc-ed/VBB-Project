@@ -4,7 +4,6 @@ from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
 
-from app import dp
 from app.filters.user import IsOwner
 
 router = Router()
@@ -12,6 +11,10 @@ router = Router()
 
 @router.message(Command("ping"), IsOwner())
 async def ping_handler(message: Message):
+    """
+    Ping checker (bot -> telegram server -> bot)
+    via the /ping command (only owner)
+    """
     start = time.perf_counter_ns()
     reply_message = await message.answer("<code>⏱ Checking ping...</code>")
     end = time.perf_counter_ns()

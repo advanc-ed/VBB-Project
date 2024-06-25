@@ -1,49 +1,75 @@
-# VBB Telegram Bot
+# 🚀 VBB Telegram Bot
 
-### Bot for finding journey information via VBB API
+### Your Personal Journey Companion via VBB API
 
 ![Telegram](https://img.shields.io/badge/Telegram-blue?style=flat&logo=telegram)
 ![PythonVersions](https://img.shields.io/pypi/pyversions/aiogram)
 ![aiogram 3](https://img.shields.io/badge/dev--3.x-aiogram-blue)
 ![aiogram-dialog](https://img.shields.io/badge/beta--2.x-aiogram__dialog-green)
 
-## Description
+## 🌟 Description
 
-The VBB Telegram Bot is a tool that allows users to retrieve journey information for their everyday trips. If a trip is
-cancelled, users will receive a notification about it.
+The **VBB Telegram Bot** is your go-to tool for effortless journey planning and updates. Receive real-time information
+on your trips and get notified instantly if a journey is cancelled.
 
-## Features
+## 🔧 Usage Features
 
-* Stores addresses and user preferences in a Postgresql Database.
-* Provides Docker virtualization for both the app and the database.
-* Includes a background service that sends users journey updates every morning.
-* Offers a good UI, thanks to aiogram-dialog.
+- 🕒 **Next Departures**: Quickly find the next departures at nearby stops.
+- 🛤️ **Detailed Journey Info**: Access comprehensive journey details to your favorite addresses.
+- 🗺️ **Address Management**: Easily manage your address database.
 
-## Usage
+## 💻 Tech Features
 
-* 🔑 Add configuration data in `config.toml`
+- 🗄️ **Async PostgreSQL Database**: Securely stores addresses and user preferences (via SQLAlchemy).
+- 🐳 **Docker Virtualization**: Provides containerization for both the app and the database.
+- 🕰️ **Background Service**: Sends users journey updates every morning.
+- 🎨 **User Interface**: Smooth and intuitive UI powered by aiogram-dialog.
 
-### manual install
+## 🚀 Getting Started
 
-* 📎 Install all dependencies from `requirements.txt`
+* 📄 Add your configuration details in `config.toml`
 
-```bash
-python -m venv .venv
-./.venv/Scripts/activate.ps1 # if you have Windows
-source bin/activate          # linux/mac
-pip install -r requirements.txt
-```
+### 📦 Manual Installation
 
-* 🚀 Run the bot using `python -m app`
+1. **Create a new virtual environment**
 
-### docker
+    ```bash
+    python -m venv .venv
+    ```
 
-```bash
-docker-compose up --build
-```
+2. **Activate the virtual environment**
 
-## TODO:
+    - Windows:
+        ```powershell
+        ./.venv/Scripts/activate.ps1
+        ```
+    - Linux/MacOS:
+        ```bash
+        source .venv/bin/activate 
+        ```
 
-* Create an independent VBB package for usage in external apps.
-* Enhance usability and optimize code.
-* Remove redundant and junk code.
+3. **Install all dependencies**
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4. **Run the bot**
+
+    ```bash
+    python -m app
+    ```
+
+### 🐳 Docker
+
+1. **Build and start the services**
+
+    ```bash
+    docker-compose up --build
+    ```
+
+## 📅 Future Plans
+
+- 📦 **Independent VBB Package**: Develop a standalone VBB package for integration into other apps.
+- 🛠️ **Usability Enhancements**: Improve user experience and optimize the codebase.
+- 🧹 **Code Cleanup**: Remove redundant and unnecessary code (primarily dialogs and message builders).

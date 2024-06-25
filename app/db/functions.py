@@ -15,6 +15,10 @@ from app.utils.enums import AddressType
 
 
 class DB(AsyncSession, ABC):
+    """
+    DB AsyncSession extends SQLAlchemy AsyncSession
+    """
+
     async def is_registered(self, user_id: int) -> bool:
         user = await self.get_user(user_id)
 

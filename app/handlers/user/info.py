@@ -2,7 +2,7 @@ from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
 
-from app import dp, owner_id
+from app import owner_id
 from app.ui.commands import owner_commands, users_commands
 
 router = Router()
@@ -10,6 +10,7 @@ router = Router()
 
 @router.message(Command("help"))
 async def help_handler(message: Message):
+    """Command list"""
     text = "ℹ️ <b>Command list:</b> \n\n"
     commands = (
         owner_commands.items()

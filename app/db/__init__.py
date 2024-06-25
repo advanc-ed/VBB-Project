@@ -2,7 +2,16 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
 
 
-async def init(database_url: str):
+async def init(database_url: str) -> sessionmaker:
+    """
+    Database connection init. Connects to database and creates engine if it doesn't exist.'
+    Args:
+        database_url: database connection url from config
+
+    Returns:
+        sessionmaker: SQLAlchemy sessionmaker
+
+    """
     from app.common import DB
 
     from .base import Base

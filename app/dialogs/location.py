@@ -2,33 +2,37 @@ from typing import Optional
 
 from aiogram.types import CallbackQuery, Location
 from aiogram_dialog import Dialog, DialogManager, ShowMode, StartMode, Window
-from aiogram_dialog.widgets.kbd import Button, Row, Start
+from aiogram_dialog.widgets.kbd import Button
 from aiogram_dialog.widgets.text import Const, Format
 
 from app.dialogs import states
 from app.dialogs.common import MAIN_MENU_BUTTON
-from app.dialogs.addresses import add_address_button
+from app.utils import message_builder
+from app.utils.models import AddressResolved
+from app.vbb.models import Helper
 
 
 async def get_data(dialog_manager: DialogManager, **_kwargs):
     location: Optional[Location] = dialog_manager.start_data.get("location", None)
+    location: Optional[AddressResolved] = await Helper.get_address_from_location(location)
+    address_information_text = message_builder.resolved_address_to_text(location)
     return {
-        "latitude": location.latitude,
-        "longitude": location.longitude,
+        "address_information_text": address_information_text,
     }
 
 
 main_text = Format(
     """\
-Received 📍:
-{latitude}, {longitude}
+Received location:
+
+{address_information_text}
 
 Please select action:"""
 )
 
 
 async def find_journeys(callback_query: CallbackQuery, button: Button, dialog_manager: DialogManager):
-    await callback_query.answer("changing state...")
+    await callback_query.answer("Getting journeys...")
 
     await dialog_manager.start(
         state=states.JourneysSG.MAIN,
