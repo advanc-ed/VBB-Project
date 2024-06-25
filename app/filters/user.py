@@ -6,6 +6,8 @@ from app import sessionmanager
 
 
 class IsOwner(BaseFilter):
+    """Checking if user is owner via comparing his id with owner id from config."""
+
     async def __call__(self, message: types.Message) -> bool:
         return message.from_user.id == owner_id
 

@@ -17,6 +17,7 @@ owner_commands.update(users_commands)
 
 
 async def set_bot_commands(bot: Bot):
+    """Register bot commands."""
     await bot.set_my_commands(
         [
             BotCommand(command=command, description=description)
@@ -35,5 +36,6 @@ async def set_bot_commands(bot: Bot):
 
 
 async def remove_bot_commands(bot: Bot):
+    """Remove bot commands."""
     await bot.delete_my_commands(scope=BotCommandScopeDefault())
     await bot.delete_my_commands(scope=BotCommandScopeChat(chat_id=app.owner_id))

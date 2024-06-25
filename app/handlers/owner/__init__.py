@@ -2,6 +2,11 @@ from aiogram import Router
 
 
 def get_owner_router() -> Router:
+    """
+    Get owner handlers router
+    Returns:
+        router: Router instance with owner routers inside.
+    """
     from . import ping, statistics
 
     router = Router()

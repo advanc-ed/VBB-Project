@@ -1,9 +1,8 @@
 import logging
-
-from dataclasses import dataclass, fields, MISSING
+from dataclasses import MISSING, dataclass, fields
 from datetime import datetime
 from enum import Enum
-from typing import Optional, Union, Any
+from typing import Any, Optional, Union
 
 
 class GeoLocation:
@@ -106,7 +105,7 @@ class Remark:
 
     def __post_init__(self):
         from .helper import Helper
-        
+
         def convert_and_set(attribute_name, conversion_function):
             value = getattr(self, attribute_name)
             if value is not None:

@@ -34,7 +34,7 @@ async def paging_getter(dialog_manager: DialogManager, **_kwargs):
     if f is None:
         data = await get_journeys(user, home_address=home_address, destination_address=destination_address)
     else:
-        data = await get_journeys(user, f.db) \
+        data = await get_journeys(user, f.db, now=now) \
             if location_ is None \
             else await get_journeys(user, f.db, location_, now=now)
 

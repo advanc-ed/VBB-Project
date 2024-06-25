@@ -1,14 +1,11 @@
 from collections import defaultdict
+from datetime import datetime
 from typing import Optional, Union
 
 from app.vbb.enums import TransportMode
 from app.vbb.func import minutes_left
-from app.db.models import Address, JourneyDB
-from datetime import datetime
-from . import AddressResolved
 from app.vbb.models import Cycle, GeoLocation, Helper, Journey, Leg, Location, Stop
-
-import logging
+from . import AddressResolved
 
 
 class MessageBuilder:
@@ -16,37 +13,29 @@ class MessageBuilder:
 
         pass
 
-    async def user_addresses_list(self, user_id: int, f) -> str:
-        """used to list addresses in addresses menu"""
+    @staticmethod
+    async def user_addresses_list(user_id: int, f) -> str:
+        """Used to list addresses in addresses menu"""
         from app.utils import address_util
 
-        user_addresses: list[Address] = await f.db.get_user_addresses(user_id)
+        user_addresses = await f.db.get_user_addresses(user_id)
+        address_lines = []
 
-        txt = ""
-
-        for number, address in enumerate(user_addresses):
-            txt += "%s. %s %s, %s %s" % (
-                number + 1,
-                address.street_name,
-                address.house_number,
-                address.plz,
-                address.city,
-            )
-
+        for number, address in enumerate(user_addresses, start=1):
+            address_line = f"{number}. {address.street_name} {address.house_number}, {address.plz} {address.city}"
             address_usage = await f.db.check_address_usage(user_id, address.id)
-
-            address_usage_with_emoji = address_util.address_usage_add_emoji(
-                address_usage)
+            address_usage_with_emoji = address_util.address_usage_add_emoji(address_usage)
 
             if address_usage_with_emoji is not None:
-                txt += "\n - %s\n" % address_usage_with_emoji
+                address_line += f"\n - {address_usage_with_emoji}"
 
-            txt += "\n"
+            address_lines.append(address_line)
 
-        return txt
+        return "\n\n".join(address_lines) + "\n"
 
-    def resolved_address_to_text(self, address_data: AddressResolved) -> str:
-        """used to show address data in addresses confirmation menu"""
+    @staticmethod
+    def resolved_address_to_text(address_data: AddressResolved) -> str:
+        """Used to show address data in addresses confirmation menu"""
 
         address_information_text = \
             """Street: %s
@@ -65,30 +54,8 @@ Postal code: %s
 
         return address_information_text
 
-    async def journey_to_text(self, journey: dict) -> str:
-        legs = journey.get("legs", [])
-        refresh_token = journey.get("refreshToken", None)
-        cycle = journey.get("cycle", {})
-
-        for leg in legs:
-            if leg.get("origin").get("id") == leg.get("destination").get("id"):
-                continue
-
-            origin = leg.get("origin", {})
-            destination = leg.get("destination", {})
-
-            origin_from = origin.get("address", None)
-            if origin_from is None:
-                origin_from = origin.get("name", None)
-
-            destination_to = destination.get("address", None)
-            if destination_to is None:
-                destination_to = destination.get("name", None)
-
-            departure = leg.get("departure", "")
-            arrival = leg.get("arrival", "")
-
     async def stop_to_text(self, stop: dict) -> str:
+        # TODO: REFACTOR IT 🥺
         def get_stop_info(stop):
             return {
                 "name": stop.get("name", "N/A"),
@@ -305,8 +272,9 @@ def get_alternatives_minutes(cycle: Cycle) -> int | str:
     return f"{minimum} - {maximum}"
 
 
-def get_text_and_geo(entity: Union[Location, Stop], departure_platform: Optional[str] = None) -> tuple[
-    str, GeoLocation]:  # noqa
+def get_text_and_geo(entity: Union[Location, Stop],
+                     departure_platform: Optional[str] = None
+                     ) -> tuple[str, GeoLocation]:  # noqa
     if isinstance(entity, Location):
         text = entity.address
         geo = entity.geo

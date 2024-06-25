@@ -1,8 +1,7 @@
-import app
 import asyncio
-import coloredlogs
 import logging
 
+import coloredlogs
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.client.session.aiohttp import AiohttpSession
@@ -10,15 +9,29 @@ from aiogram.client.telegram import TelegramAPIServer
 from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 
+import app
 from app import config
 from app import db
-
 from app.ui.commands import remove_bot_commands, set_bot_commands
 
 
 async def on_startup(dispatcher: Dispatcher, bot: Bot):
-    from app import handlers, middlewares, filters
+    """
+    Register bot handlers (commands and dialogs),
+             bot commands
 
+    Also drop pending updates
+
+    Args:
+        dispatcher: Comes from **kwargs, given by Dispatcher.
+        bot: Comes from **kwargs, given by Dispatcher.
+
+    Returns:
+
+    """
+    from app import handlers, middlewares
+
+    middlewares.register_middlewares(dp=app.dp, config=config)
     app.dp.include_router(handlers.get_handlers_router())
 
     await set_bot_commands(app.bot)
@@ -30,6 +43,15 @@ async def on_startup(dispatcher: Dispatcher, bot: Bot):
 
 
 async def on_shutdown(dispatcher: Dispatcher, bot: Bot):
+    """
+    Close bot instance, FSM Storage and bot session on shutdown.
+    Args:
+        dispatcher: Comes from **kwargs, given by Dispatcher.
+        bot: Comes from **kwargs, given by Dispatcher.
+
+    Returns:
+
+    """
     logging.warning("Stopping bot...")
     await remove_bot_commands(bot)
     await bot.delete_webhook(drop_pending_updates=config.settings.drop_pending_updates)
@@ -38,6 +60,11 @@ async def on_shutdown(dispatcher: Dispatcher, bot: Bot):
 
 
 async def main():
+    """
+    Main entry point for the bot.
+    Returns:
+
+    """
     logging_level = logging.DEBUG if app.arguments.test else logging.INFO
     coloredlogs.install(level=logging_level, milliseconds=True)
     logging.warning("Starting bot...")

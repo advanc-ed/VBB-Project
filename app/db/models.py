@@ -1,17 +1,9 @@
-from datetime import datetime, timedelta
-import pytz
 import uuid
+from datetime import datetime, timedelta
 
-from sqlalchemy import (UUID, BigInteger,
-                        Boolean,
-                        CheckConstraint,
-                        Column, DateTime,
-                        Float,
-                        ForeignKey,
-                        Integer,
-                        String,
-                        Sequence, Time)
-
+import pytz
+from sqlalchemy import (BigInteger, Boolean, CheckConstraint, Column, DateTime, Float, ForeignKey, Integer, Sequence,
+                        String, Time, UUID)
 from sqlalchemy.orm import relationship
 
 from app.db.base import Base
@@ -38,7 +30,6 @@ class Address(Base):
     __tablename__ = "addresses"
     __allow_unmapped__ = True
 
-    # id = Column(Integer, primary_key=True, unique=True, autoincrement=True)
     id = Column(Integer,
                 Sequence('addresses_id_seq'),
                 primary_key=True,
@@ -58,7 +49,6 @@ class User(Base):
     __allow_unmapped__ = True
 
     id = Column(BigInteger, primary_key=True, unique=True, autoincrement=False)
-    # registered = Column(Boolean)
     home_address_id = Column(
         Integer,
         ForeignKey('addresses.id'),

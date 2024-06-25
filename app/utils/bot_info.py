@@ -2,6 +2,7 @@ import logging
 
 
 def bot_info(bot_information):
+    """This information comes on bot startup"""
     logging.info(f"Name - {bot_information.full_name}")
     logging.info(f"Username - @{bot_information.username}")
     logging.info(f"ID - {bot_information.id}")

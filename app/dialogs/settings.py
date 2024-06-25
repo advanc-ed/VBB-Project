@@ -176,7 +176,6 @@ async def change_handler(
 
 async def check_transport_type(event: ChatEvent, checkbox: ManagedCheckbox, manager: DialogManager, *args, **kwargs):
     transport_mode = TransportMode[checkbox.widget.widget_id]
-    logging.info(transport_mode)
     f = manager.middleware_data.get("f")
     await f.db.update_user_data(event.from_user.id, {
         transport_mode.name.lower(): checkbox.is_checked()

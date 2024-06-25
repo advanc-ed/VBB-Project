@@ -1,14 +1,9 @@
 import re
 
 from aiogram import F, Router
-
-from aiogram.filters import CommandStart, CommandObject
-from aiogram.types import Message, InlineKeyboardButton
-
+from aiogram.filters import CommandObject, CommandStart
+from aiogram.types import InlineKeyboardButton, Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-
-from app import dp
-from app.common import FMT
 
 router = Router()
 
@@ -18,6 +13,8 @@ router = Router()
     magic=F.args.regexp(re.compile(r'location_pin_(\d+)'))
 ))
 async def location_cmd(message: Message, command: CommandObject):
+    """Returns message with geolocation via deeplink.
+    Latitude and longitude are being passed via deep_link and magic filter"""
     args = command.args.split("_")
     *_, latitude, longitude = args
     latitude = float(latitude.replace("-", "."))

@@ -2,7 +2,6 @@ from aiogram import Bot, Router
 from aiogram.filters import Command
 from aiogram.types import Message
 
-from app import dp
 from app.common import FMT
 
 router = Router()
@@ -16,6 +15,7 @@ async def cmd_start(message: Message, f: FMT, bot: Bot):
         await f.db.register(user_id)
 
     await message.answer(
-        f"Welcome in <b>{bot_information.full_name}</b>! \n"
+        f"Welcome in <b>{bot_information.full_name}</b>! \n" +
+        f"<b>️ Press</b> /menu <b>for starting the dialog.</b> \n" +
         f"<b>️ Press</b> /help <b>for more information and usage help.</b>"
     )

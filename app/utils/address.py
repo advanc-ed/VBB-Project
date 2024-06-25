@@ -1,57 +1,92 @@
 import logging
-from .models import AddressResolved
-from app.db.models import Address
-from app.utils.enums import AddressType, AddressTypeEmoji
+from typing import Any, Optional
 
 from geopy.geocoders import Nominatim
 from geopy.location import Location
 
-from typing import Any, List, Optional, Union
+from app.db.models import Address
+from app.utils.enums import AddressType, AddressTypeEmoji
+from .models import AddressResolved
 
 
 class AddressUtil:
+    """
+    Class to handle address related operations.
+    """
+
     def __init__(self) -> None:
         pass
 
-    def get_building(self, query):
+    @staticmethod
+    def get_building(query):
+        """
+        Get a building object from the given query, via Nominatim.
+        Args:
+            query: any string, that somehow could be related to a building
+
+        Returns:
+            location: Nominatim Location object
+        """
         geolocator = Nominatim(user_agent="vbb-app")
-        location: list[Location] = geolocator.geocode(
+        locations: list[Location] = geolocator.geocode(
             query,
             exactly_one=False,
+            addressdetails=True,
+            namedetails=True,
             timeout=3)
 
-        if location is None:
+        if locations is None:
             return None
 
-        for loc in location:
-            if loc.raw.get("class", "building") in [
+        for location in locations:
+            if location.raw.get("class", "building") in [
                 "building",
                 "place"
             ]:
-                return loc
+                return location
 
-        return location[0]
+        return locations[0]
+
+    @staticmethod
+    def parse_building_data(location: Location):
+        """
+        Parse a building object from Nominatim
+        Args:
+            location: Nominatim Location object
+
+        Returns:
+            (street_name, street_number, city, state, postal_code, country)
+
+        """
+        location_data: Optional[dict] = location.raw.get("address", None)
+        if location_data is None:
+            return None
+
+        street_name = location_data.get("road")
+        house_number = location_data.get("house_number")
+        house_number = int(house_number.split('-')[0])
+        city = location_data.get("city").strip()
+        plz = location_data.get("postcode").strip()
+        latitude = round(location.latitude, 8)
+        longitude = round(location.longitude, 8)
+
+        return street_name, house_number, city, plz, latitude, longitude
 
     def get_resolved_address(self, address: str) -> Optional[AddressResolved]:
+        """
+        Get a resolved address object from the given address, via Nominatim.
+        Args:
+            address: any string, that somehow could be related to a building
+
+        Returns:
+            AddressResolved object
+        """
         location: Location = self.get_building(address)
 
         if location is None:
             return None
 
-        address_parts = location.address.split(',')
-        street_name = address_parts[1].strip()
-        house_number_test = address_parts[0].strip()
-
-        try:
-            house_number = int(house_number_test.split('-')[0])
-        except ValueError:
-            house_number = 0
-            street_name = house_number_test
-
-        city = address_parts[-3].strip()
-        plz = address_parts[-2].strip()
-        latitude = round(location.latitude, 8)
-        longitude = round(location.longitude, 8)
+        street_name, house_number, city, plz, latitude, longitude = self.parse_building_data(location)
 
         return AddressResolved(
             street_name=street_name,
@@ -69,6 +104,14 @@ class AddressUtil:
             user_id: int,
             f
     ) -> None:
+        """
+        Register addresses for a user
+        Args:
+            home_address_resolved: Home AddressResolved object
+            default_destination_address_resolved: Destination AddressResolved object
+            user_id: user_id from Telegram
+            f: FMT Object for connection to DB
+        """
         await f.db.register_user(
             addresses={
                 "home_address": home_address_resolved,

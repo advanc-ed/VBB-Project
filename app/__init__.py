@@ -1,10 +1,10 @@
 import argparse
-from .config import Config, parse_config
 
 from aiogram import Bot, Dispatcher
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-
 from sqlalchemy.orm import sessionmaker
+
+from .config import Config, parse_config
 
 
 def parse_arguments():

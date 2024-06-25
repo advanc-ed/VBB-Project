@@ -1,16 +1,14 @@
-import asyncio
-import httpx
 import aiohttp
+import asyncio
 import logging
 import random
+
+from aiogram.types import Location
 
 from datetime import datetime
 from urllib.parse import urlencode, urljoin
 
-from aiogram.types import Location
-from aiohttp import ClientResponseError
-
-from app.db.models import User, Address
+from app.db.models import Address, User
 from app.vbb.models import Helper
 
 base_url = "https://v6.vbb.transport.rest"
@@ -74,9 +72,6 @@ async def get_reachable_stops(user_id: int, f, distance=500, **kwargs):
 
     stops_information = await fetch_data(base_url, path, params)
 
-    # for stop in stops_information:
-    #     stop["departures"] = await get_stop_departures(stop["id"])
-
     await asyncio.gather(
         *[
             fetch_departures(stop) for stop in stops_information
@@ -106,9 +101,7 @@ async def get_stop_departures(stop_id: str, **kwargs):
 
 
 async def update_stop_information(stop_id: str, **kwargs):
-    departures = await get_stop_departures(stop_id, {
-        "linesOfStops": True
-    })
+    departures = await get_stop_departures(stop_id, linesOfStops=True, **kwargs)
 
     if not departures:
         return None

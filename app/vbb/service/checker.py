@@ -1,5 +1,5 @@
-import logging
 import asyncio
+import logging
 from datetime import datetime, time
 
 from aiogram.fsm.state import State
